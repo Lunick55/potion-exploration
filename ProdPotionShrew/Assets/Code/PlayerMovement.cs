@@ -7,9 +7,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float speed = 1.0f;
     [SerializeField] float gravity = 0.0f;
     [SerializeField] float jumpSpeed = 0.0f;
+	[SerializeField] float rSpeed = 0.0f;
 	private Transform myTrans;
     float vSpeed = 0;
-
+	float playerRotation = 0.0f;
     CharacterController cc;
 
     private bool canMovePlayer = true;
@@ -77,12 +78,22 @@ public class PlayerMovement : MonoBehaviour
 				canJump = false;
 			}
 
+			if(Input.GetAxis("Mouse X") < 0)
+     			transform.Rotate(Vector3.up * rSpeed);
+ 			if(Input.GetAxis("Mouse X") > 0)
+     			transform.Rotate(Vector3.up * -rSpeed);
+
             //apply accelerating gravity
             inputDir.y = (vSpeed -= (gravity * Time.deltaTime)); 
 
+			//inputDir.x += inputDir.z * playerRotation;
+			inputDir.x = Mathf.Sin(transform.rotation.y) * inputDir.x + Mathf.Cos(transform.rotation.y) * inputDir.z;
+			inputDir.z = Mathf.Cos(transform.rotation.y) * inputDir.x + Mathf.Sin(transform.rotation.y) * inputDir.z;
+
             //move the object
             cc.Move(inputDir * Time.deltaTime); // this might need to get out of the if statement
-        }
+			
+		}
 
         inputDir = Vector3.zero;
     }
