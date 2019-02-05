@@ -8,13 +8,21 @@ public class EquipmentPanel : MonoBehaviour
 	[SerializeField] Transform equipmentSlotParent;
 	[SerializeField] EquipmentSlot[] equipmentSlots;
 
-	public event Action<Item> OnItemRightClickedEvent;
+	public event Action<ItemSlot> OnRightClickEvent;
+	public event Action<ItemSlot> OnBeginDragEvent;
+	public event Action<ItemSlot> OnEndDragEvent;
+	public event Action<ItemSlot> OnDragEvent;
+	public event Action<ItemSlot> OnDropEvent;
 
-	private void Awake()
+	private void Start()
 	{
 		for (int i = 0; i < equipmentSlots.Length; i++)
 		{
-			equipmentSlots[i].OnRightClickEvent += OnItemRightClickedEvent;
+			equipmentSlots[i].OnRightClickEvent += OnRightClickEvent;
+			equipmentSlots[i].OnBeginDragEvent += OnBeginDragEvent;
+			equipmentSlots[i].OnEndDragEvent += OnEndDragEvent;
+			equipmentSlots[i].OnDragEvent += OnDragEvent;
+			equipmentSlots[i].OnDropEvent += OnDropEvent;
 		}
 	}
 
@@ -22,20 +30,7 @@ public class EquipmentPanel : MonoBehaviour
 	{
 		equipmentSlots = equipmentSlotParent.GetComponentsInChildren<EquipmentSlot>();
 
-		RefreshUI();
 	}
-
-	private void RefreshUI()
-	{
-		int i = 0;
-
-		for (; i < equipmentSlots.Length; i++)
-		{
-			if (equipmentSlots[i].item == null)
-			equipmentSlots[i].item = null;
-		}
-	}
-
 
 	public bool AddItem(EquipableItem item, out EquipableItem previousItem)
 	{
